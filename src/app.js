@@ -95,7 +95,7 @@ app.post("/login", async (req, res) => {
             return res.status(401).send("Invalid credentials");
         }
 
-        const token = jwt.sign({ _id: userData._id }, "DEV@Tinder$790");
+        const token = jwt.sign({ _id: userData._id }, "DEV@Tinder$790", {expiresIn: "1d"});
 
         res.cookie("token", token, {
             httpOnly: true
