@@ -2,8 +2,28 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/database");
 const { userAuth } = require("./middlewares/auth");
+const User = require("./models/user");
 
 const app = express();
+
+// ✅ Custom CORS middleware — works perfectly with Express 5
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  // Handle preflight OPTIONS request
+  if (req.method === "OPTIONS") {
+    return res.status(204).send();
+  }
+
+  next();
+});
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -17,48 +37,19 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 
-app.get("/user", userAuth, async (req, res) => {
-  const userEmailId = req.query.emailId;
-  try {
-    const user = await User.find({ emailId: userEmailId });
-    res.send(user);
-  } catch (err) {
-    res.status(400).send("Something went wrong" + err);
-  }
-});
+// ... rest of your routes
 
-app.get("/feed", userAuth, async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.send(users);
-  } catch {
-    res.status(400).send("Something went wrong!!");
-  }
-});
-
-app.delete("/user", userAuth, async (req, res) => {
-  const userId = req.body.userId;
-
-  try {
-    await User.findByIdAndDelete({ _id: userId });
-    //await User.findByIdAndDelete(userId);
-    res.send("User Removed Successfully!!!");
-  } catch (err) {
-    res.status(400).send("Something went wrong" + err);
-  }
+app.use((req, res) => {
+  res.status(404).send("Route not found");
 });
 
 connectDB()
   .then(() => {
     console.log("Database connection is established");
     app.listen(7777, () => {
-      console.log("Server listenning on port 7777");
+      console.log("Server listening on port 7777");
     });
   })
   .catch((err) => {
-    console.log("Database connection canont be established");
+    console.log("Database connection cannot be established", err);
   });
-
-app.use("", (req, res) => {
-  res.send("Message from server");
-});
