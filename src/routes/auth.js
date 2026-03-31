@@ -6,7 +6,17 @@ const bcrypt = require("bcrypt");
 
 authRouter.post("/signUp", async (req, res) => {
   try {
-    const { firstName, lastName, emailId, password, gender, age } = req.body;
+    const {
+      firstName,
+      lastName,
+      emailId,
+      password,
+      gender,
+      age,
+      about,
+      photoUrl,
+      skills,
+    } = req.body;
     signupDateValidator(req);
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -17,6 +27,9 @@ authRouter.post("/signUp", async (req, res) => {
       password: hashedPassword,
       gender,
       age,
+      about,
+      photoUrl,
+      skills,
     });
 
     await user.save();

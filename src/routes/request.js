@@ -15,7 +15,7 @@ requestRouter.post(
 
       const allowedStatus = ["ignored", "interested"];
       if (!allowedStatus.includes(status)) {
-        res.status(400).send("Bad Request");
+        return res.status(400).send("Bad Request");
       }
 
       const toUser = await User.findById(toUserId);
@@ -23,7 +23,7 @@ requestRouter.post(
         return res.status(404).json({ message: "User Not Found!!" });
       }
 
-      const existingConnectionRequest = connectionRequest.findOne({
+      const existingConnectionRequest = await ConnectionRequest.findOne({
         $or: [
           { fromUserId, toUserId },
           { fromUserId: toUserId, toUserId: fromUserId },
@@ -34,9 +34,9 @@ requestRouter.post(
         return res.status(400).send("Coonection Request already exist!!!");
       }
 
-      if (requestStatus) {
-        res.status(400).send("Connection request is already exist");
-      }
+      // if (requestStatus) {
+      //   return res.status(400).send("Connection request is already exist");
+      // }
 
       const connectionRequest = new ConnectionRequest({
         fromUserId,
@@ -45,8 +45,8 @@ requestRouter.post(
       });
       const data = await connectionRequest.save();
       const statusMessages = {
-        interested: `${fromUserId.firstName} is interested in ${toUserId.firstName}`,
-        ignored: `${fromUserId.firstName} ignored ${toUserId.firstName}`,
+        interested: `${req.user.firstName} is interested in ${toUser.firstName}`,
+        ignored: `${req.user.firstName} ignored ${toUser.firstName}`,
       };
 
       res.json({

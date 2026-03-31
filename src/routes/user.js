@@ -51,23 +51,24 @@ userRouter.get("/feed", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
 
-    const page = pasrseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.page) || 10;
+    const page = parseInt(req?.query?.page) || 1;
+    let limit = parseInt(req?.query?.limit) || 10; // ✅ fixed query param
     limit = limit > 50 ? 50 : limit;
 
     const skip = (page - 1) * limit;
 
-    const connectionRequests = await ConectionRequest({
+    const connectionRequests = await ConnectionRequest.find({
       $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
     })
-      .select("fromUserId", "toUserId", "age", "gender")
+      .select(["fromUserId", "toUserId"]) // ✅ only valid fields
       .skip(skip)
       .limit(limit);
 
     const hideUserFromFeed = new Set();
-    connectionRequests.forEach((req) => {
-      hideUserFromFeed.add(req.fromUserId.toString());
-      hideUserFromFeed.add(req.toUserId.toString());
+    connectionRequests.forEach((request) => {
+      // ✅ renamed from req to request
+      hideUserFromFeed.add(request.fromUserId.toString());
+      hideUserFromFeed.add(request.toUserId.toString());
     });
 
     const users = await User.find({
@@ -75,7 +76,17 @@ userRouter.get("/feed", userAuth, async (req, res) => {
         { _id: { $nin: Array.from(hideUserFromFeed) } },
         { _id: { $ne: loggedInUser._id } },
       ],
-    }).select("fromUserId", "toUserId");
+    }).select([
+      "firstName",
+      "lastName",
+      "emailId",
+      "age",
+      "gender",
+      "skills",
+      "about",
+      "photoUrl",
+    ]); // ✅ actual User fields
+
     res.json({ data: users });
   } catch (err) {
     res.status(400).send({ message: err.message });

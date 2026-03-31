@@ -40,6 +40,20 @@ const userSchema = new Schema(
     gender: {
       type: String,
     },
+    about: {
+      type: String,
+    },
+    photoUrl: {
+      type: String,
+    },
+    skills: {
+      type: [String],
+      validate: {
+        validator: (arr) => arr.length <= 10, // max 10 skills
+        message: "Skills cannot exceed 10 items",
+      },
+      default: [],
+    },
   },
   {
     timestamp: true,
