@@ -67,10 +67,6 @@ requestRouter.post(
     const { status, requestId } = req.params;
     const allowedStatus = ["accepted", "rejected"];
 
-    console.log(req.params);
-
-    console.log("Status:" + status);
-
     if (!allowedStatus.includes(status)) {
       return res.status(400).json({ message: "Status not allowed!" });
     }
