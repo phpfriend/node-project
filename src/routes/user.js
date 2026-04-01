@@ -96,7 +96,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
     const loggedInUser = req.user;
 
     const page = parseInt(req?.query?.page) || 1;
-    let limit = parseInt(req?.query?.limit) || 10; // ✅ fixed query param
+    let limit = parseInt(req?.query?.limit) || 10;
     limit = limit > 50 ? 50 : limit;
 
     const skip = (page - 1) * limit;
@@ -104,13 +104,12 @@ userRouter.get("/feed", userAuth, async (req, res) => {
     const connectionRequests = await ConnectionRequest.find({
       $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
     })
-      .select(["fromUserId", "toUserId"]) // ✅ only valid fields
+      .select(["fromUserId", "toUserId"])
       .skip(skip)
       .limit(limit);
 
     const hideUserFromFeed = new Set();
     connectionRequests.forEach((request) => {
-      // ✅ renamed from req to request
       hideUserFromFeed.add(request.fromUserId.toString());
       hideUserFromFeed.add(request.toUserId.toString());
     });
@@ -129,7 +128,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
       "skills",
       "about",
       "photoUrl",
-    ]); // ✅ actual User fields
+    ]);
 
     res.json({ data: users });
   } catch (err) {

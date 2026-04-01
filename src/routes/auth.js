@@ -32,9 +32,19 @@ authRouter.post("/signUp", async (req, res) => {
       skills,
     });
 
-    await user.save();
+    const userData = await user.save();
+    const token = await userData.getJWT();
+    const isProduction = process.env.NODE_ENV === "production";
 
-    res.send("User created successfully!!");
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProduction, // true in prod, false in dev
+      sameSite: isProduction ? "none" : "lax", // none in prod, lax in dev
+    });
+
+    res.json({ message: "User created successfully!!", data: userData });
+
+    // res.send("User created successfully!!");
   } catch (err) {
     res.status(400).send("Error saving the user: " + err.message);
   }
