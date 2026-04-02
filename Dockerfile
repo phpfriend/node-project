@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 5000
 
 # Start backend
-CMD ["node", "server.js"]   # Replace server.js with your main file if different
+CMD ["node", "src/app.js"]  # Replace server.js with your main file if different
