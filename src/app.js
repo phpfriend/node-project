@@ -46,7 +46,7 @@ app.use((req, res) => {
 connectDB()
   .then(() => {
     console.log("Database connection is established");
-    app.listen(7777, () => {
+    app.listen(5000, () => {
       console.log("Server listening on port 7777");
     });
   })
