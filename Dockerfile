@@ -1,10 +1,15 @@
 FROM node:22.12.0-alpine
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Copy backend package files
+COPY backend/package*.json ./
+RUN npm install --legacy-peer-deps
 
-COPY . .
+# Copy backend source
+COPY backend/. .
 
+# Expose backend port
 EXPOSE 5000
+
+# Start backend
 CMD ["node", "server.js"]
