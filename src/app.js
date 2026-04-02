@@ -43,11 +43,15 @@ app.use((req, res) => {
   res.status(404).send("Route not found");
 });
 
+const PORT = process.env.PORT || 5000;
+
 connectDB()
   .then(() => {
     console.log("Database connection is established");
-    app.listen(5000, () => {
-      console.log("Server listening on port 7777");
+
+    // IMPORTANT: use '0.0.0.0' instead of default
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server listening on port ${PORT}`);
     });
   })
   .catch((err) => {
