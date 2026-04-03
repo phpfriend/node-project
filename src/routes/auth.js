@@ -1,5 +1,6 @@
 const express = require("express");
 const authRouter = express.Router();
+require("dotenv").config();
 const { signupDateValidator } = require("../utils/validator");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
