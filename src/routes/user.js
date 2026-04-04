@@ -35,7 +35,7 @@ userRouter.get("/user/requests/sent", userAuth, async (req, res) => {
 
     const connectionRequests = await ConnectionRequest.find({
       fromUserId: loggedInUser._id,
-      status: "interested", // ✅ keep or remove based on your requirement
+      status: "interested",
     }).populate("toUserId", [
       "firstName",
       "lastName",

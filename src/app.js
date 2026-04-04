@@ -6,7 +6,8 @@ const User = require("./models/user");
 
 const app = express();
 
-// ✅ Custom CORS middleware — works perfectly with Express 5
+require("dotenv").config();
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -36,8 +37,6 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
-
-// ... rest of your routes
 
 app.use((req, res) => {
   res.status(404).send("Route not found");
