@@ -54,7 +54,7 @@ requestRouter.post(
           body: JSON.stringify({
             fromName: req.user.firstName,
             toName: toUser.firstName,
-            toEmail: "ytiwari01@gmail.com", //toUser.emailId, // change emailId to whatever your User model field is
+            toEmail: "cloudeNexus@gmail.com", //toUser.emailId, // change emailId to whatever your User model field is
           }),
         },
       ).catch((err) => console.error("Lambda email error:", err));
