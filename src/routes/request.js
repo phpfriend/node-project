@@ -46,7 +46,7 @@ requestRouter.post(
       });
       const data = await connectionRequest.save();
 
-      const emailRes = await sendEmail.run();
+      // const emailRes = await sendEmail.run();
 
       // console.log(emailRes);
 
