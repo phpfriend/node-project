@@ -46,7 +46,19 @@ requestRouter.post(
       });
       const data = await connectionRequest.save();
 
-      // const emailRes = await sendEmail.run();
+      // Fire and forget — don't block the response
+      fetch(
+        "https://8a9yuqhrya.execute-api.eu-north-1.amazonaws.com/prod/send-connection-email",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fromName: req.user.firstName,
+            toName: toUser.firstName,
+            toEmail: "ytiwari01@gmail.com", //toUser.emailId, // change emailId to whatever your User model field is
+          }),
+        },
+      ).catch((err) => console.error("Lambda email error:", err));
 
       // console.log(emailRes);
 
